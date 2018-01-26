@@ -66,7 +66,7 @@ class Actor(object):
             log_prob = tf.log(self.acts_prob[0, self.a])
             self.exp_v = tf.reduce_mean(log_prob * self.td_error)  # advantage (TD_error) guided loss
 
-        with tf.variable_scope('train'):
+        with tf.variable_scope('train_actor'):
             self.train_op = tf.train.AdamOptimizer(lr).minimize(-self.exp_v)  # minimize(-exp_v) = maximize(exp_v)
 
     def learn(self, s, a, td):
@@ -113,7 +113,7 @@ class Critic(object):
         with tf.variable_scope('squared_TD_error'):
             self.td_error = self.r + GAMMA * self.v_ - self.v
             self.loss = tf.square(self.td_error)    # TD_error = (r+gamma*V_next) - V_eval
-        with tf.variable_scope('train'):
+        with tf.variable_scope('train_critic'):
             self.train_op = tf.train.AdamOptimizer(lr).minimize(self.loss)
 
     def learn(self, s, r, s_):
